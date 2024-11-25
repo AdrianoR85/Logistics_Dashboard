@@ -25,6 +25,20 @@ st.set_page_config(page_title="Logistics", page_icon="📦", layout="wide")
 # ----------------------------------------------------------------------------------------------------------#
 
 # ----------------------------------------------SIDEBAR-----------------------------------------------------#
+st.markdown(
+    """
+    <style>
+    /* Ajusta a largura da sidebar */
+    [data-testid="stSidebar"] {
+        width: 250px; /* Define a largura desejada */
+        min-width: 250px; /* Define a largura mínima */
+    }
+
+    /* Ajusta a largura do conteúdo principal para acompanhar a sidebar */
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 st.sidebar.header("Filtros")
 years = get_available_year()
 selected_year = st.sidebar.selectbox(
