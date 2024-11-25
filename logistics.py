@@ -10,7 +10,7 @@ from calculate import (
     calculate_percentage_team,
     city_delivery_summary,
     calculate_total_on_time,
-    calculate_total_delay
+    calculate_total_delay,
 )
 from utils import (
     card_style,
@@ -47,9 +47,18 @@ total_deliveries = calculate_total_deliveries(df_filtered)
 total_on_time = calculate_total_on_time(df_filtered)
 total_delay = calculate_total_delay(df_filtered)
 
-st.sidebar.markdown(card_style.format(title="Total de Entregas", value=total_deliveries), unsafe_allow_html=True)
-st.sidebar.markdown(card_style.format(title="Total de Entregas No Prazo", value=total_on_time), unsafe_allow_html=True)
-st.sidebar.markdown(card_style.format(title="Total de Entregas Atrasadas", value=total_delay), unsafe_allow_html=True)
+st.sidebar.markdown(
+    card_style.format(title="Total de Entregas", value=total_deliveries),
+    unsafe_allow_html=True,
+)
+st.sidebar.markdown(
+    card_style.format(title="Total de Entregas No Prazo", value=total_on_time),
+    unsafe_allow_html=True,
+)
+st.sidebar.markdown(
+    card_style.format(title="Total de Entregas Atrasadas", value=total_delay),
+    unsafe_allow_html=True,
+)
 # ----------------------------------------------------------------------------------------------------------#
 
 # ---------------------------------------MAIN DASHBOARD-----------------------------------------------------#
@@ -62,7 +71,7 @@ with st.container():
     col1, col2 = st.columns(2)
     col3, col4, col5 = st.columns(3)
 
-     # ----------------------------------------------CHART 01-----------------------------------------------#
+    # ----------------------------------------------CHART 01-----------------------------------------------#
     # On Time Delivery Chart
     on_time_deliveries = calculate_on_time_delivery(df_filtered)
     fig_channel = px.bar(
@@ -71,7 +80,7 @@ with st.container():
         y="Total",
         color="Status_Entrega",
         title=f"Total de Entregas por Canal",
-        barmode="group"
+        barmode="group",
     )
     # Display the line chart in the Streamlit app
     col1.plotly_chart(fig_channel, use_container_width=True)
@@ -87,7 +96,6 @@ with st.container():
         x="Percentage",
         title="Percentual de Entregas Por Equipe",
         text="FormattedPercentage",
-
     )
     fig_team.update_traces(textposition="outside")
     col2.plotly_chart(fig_team, use_container_width=True)
@@ -102,15 +110,29 @@ with st.container():
         x="Mes_Entrega",
         y="Data_Entrega_Realizada",
         title="Total de Entregas Por Mês",
+        text="Data_Entrega_Realizada",
+        markers=True,
     )
+    fig_month.update_traces(
+        text=deliveries_by_month["Data_Entrega_Realizada"],
+        textposition="top center",  # Posição do texto
+    )
+    fig_month.update_layout(
+    yaxis=dict(
+        range=[deliveries_by_month["Data_Entrega_Realizada"].min() * 0.8, deliveries_by_month["Data_Entrega_Realizada"].max() * 1.2]  # Ajuste o limite superior se necessário
+    )
+)
     col3.plotly_chart(fig_month, use_container_width=True)
     # -------------------------------------------------------------------------------------------------------#
 
-     # ----------------------------------------------CHART 04------------------------------------------------#
-     # Percentage of Status
+    # ----------------------------------------------CHART 04------------------------------------------------#
+    # Percentage of Status
     df_status = calculate_percenge_status(df_filtered)
     fig_status = px.pie(
-        df_status, names="Status_Entrega", values="Percentage", title="Percentual de Entregas Por Status"
+        df_status,
+        names="Status_Entrega",
+        values="Percentage",
+        title="Percentual de Entregas Por Status",
     )
     col4.plotly_chart(fig_status, use_container_width=True)
     # -------------------------------------------------------------------------------------------------------#
@@ -119,7 +141,7 @@ with st.container():
     # Summary of City Delivery
     df_city_summary = city_delivery_summary(df_filtered)
     col5.markdown(
-    "<h5 style='font-size:16px;'>Resumo de Entregas por Cidade</h5>",
-    unsafe_allow_html=True
-)
+        "<h5 style='font-size:16px;'>Resumo de Entregas por Cidade</h5>",
+        unsafe_allow_html=True,
+    )
     col5.dataframe(df_city_summary, use_container_width=True)
